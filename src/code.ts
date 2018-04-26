@@ -1,7 +1,16 @@
 import { Observable } from "rxjs/Observable"
+import { Subscription } from "rxjs/Subscription";
 
-let observable = Observable.create( (observer : any) => {
-    observer.next('Hey mec !')
+let observable = Observable.create((observer : any) => {
+    try {
+        observer.next('Hey mec!')
+        observer.next('ça roule ?')
+        setInterval(() => {
+            observer.next('Ouais mec ! =)')
+        }, 2000)
+    } catch (err) {
+        observer.error(err)
+    }
 })
 
 let addItem = ((val:any) => {
@@ -11,4 +20,12 @@ let addItem = ((val:any) => {
     document.getElementById("output").appendChild(node)
 })
 
-observable.subscribe((x:any) => addItem(x))
+let subscription = observable.subscribe(
+    (x:any) => addItem(x),
+    (error:any) => addItem(error),
+    () => addItem('Complété')
+)
+
+setTimeout(() => {
+    subscription.unsubscribe()
+}, 6001)
